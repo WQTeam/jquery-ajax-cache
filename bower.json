@@ -1,0 +1,21 @@
+{
+  "name": "jquery-ajax-cache",
+  "main": [
+    "src/jquery-ajax-cache"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "version": "0.0.1",
+  "description": "Ajax Cache plugin backed by localStorage or sessionStorage for jQuery",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/WQTeam/jquery-ajax-cache"
+}
