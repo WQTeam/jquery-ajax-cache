@@ -1,0 +1,11 @@
+{
+    "name": "jquery-ajax-cache",
+    "license": "MIT",
+    "author": "wuchangming",
+    "description": "Ajax Cache plugin backed by localStorage or sessionStorage for jQuery",
+    "version": "1.2.6",
+    "dependencies": {
+        "blueimp-md5": "^1.1.1",
+        "web-storage-cache": "^0.0.2"
+    }
+}
