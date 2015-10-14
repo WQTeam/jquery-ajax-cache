@@ -17,5 +17,8 @@
     "globals"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/WQTeam/jquery-ajax-cache"
+  "homepage": "https://github.com/WQTeam/jquery-ajax-cache",
+  "dependencies": {
+      "jquery": ">= 1.5.1"
+  }
 }
