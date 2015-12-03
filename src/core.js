@@ -32,6 +32,10 @@
         })
     };
 
+    // 启动前手动清除已过期数据
+    wsCacheMap.sessionStorage.deleteAllExpires();
+    wsCacheMap.localStorage.deleteAllExpires();
+
     function genCacheKey(options){
         var dataString = options.data;
         try {
