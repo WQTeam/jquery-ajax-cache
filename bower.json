@@ -1,24 +1,23 @@
 {
   "name": "jquery-ajax-cache",
-  "main": [
-    "src/jquery-ajax-cache"
+  "description": "Ajax Cache plugin backed by localStorage or sessionStorage for jQuery",
+  "main": "",
+  "authors": [
+    "wuchangming"
   ],
+  "license": "MIT",
+  "keywords": [
+    "localstorage",
+    "sessionstorage",
+    "ajax"
+  ],
+  "homepage": "https://github.com/WQTeam/jquery-ajax-cache",
+  "moduleType": [],
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "test",
     "tests"
-  ],
-  "version": "0.0.1",
-  "description": "Ajax Cache plugin backed by localStorage or sessionStorage for jQuery",
-  "moduleType": [
-    "amd",
-    "globals"
-  ],
-  "license": "MIT",
-  "homepage": "https://github.com/WQTeam/jquery-ajax-cache",
-  "dependencies": {
-      "jquery": ">= 1.5.1"
-  }
+  ]
 }

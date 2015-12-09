@@ -1,15 +1,12 @@
 {
-    "name": "jquery-ajax-cache",
-    "license": "MIT",
-    "author": "wuchangming",
-    "description": "Ajax Cache plugin backed by localStorage or sessionStorage for jQuery",
-    "version": "0.0.1",
-    "dependencies": {
-        "jquery": ">= 1.5.1"
-    },
-    "devDependencies": {
-        "blueimp-md5": "^1.1.1",
-        "web-storage-cache": "^0.0.2",
-        "gulp": "^3.9.0"
-    }
+  "name": "jquery-ajax-cache",
+  "license": "MIT",
+  "author": "wuchangming",
+  "description": "Ajax Cache plugin backed by localStorage or sessionStorage for jQuery",
+  "version": "0.0.1",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "jquery": "^2.1.4",
+    "web-storage-cache": "^0.0.3"
+  }
 }
