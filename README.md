@@ -1,7 +1,7 @@
 # jquery-ajax-cache
 Ajax Cache plugin backed by localStorage or sessionStorage for jQuery
 
-# Usage
+# 使用
 
 ## 全局配置
 ```javascript
