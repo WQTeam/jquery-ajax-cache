@@ -27,7 +27,7 @@ export function addFilterToJquery($ajaxCache) {
                     }
                     options.success = function(data) {
 
-                        var exp = defaultExpires;
+                        var exp = cacheProxy.defaultExpires;
                         if(typeof ajaxCacheOptions.timeout === 'number') {
                             exp = ajaxCacheOptions.timeout;
                         }

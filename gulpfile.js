@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var mocha = require('gulp-mocha-phantomjs');
 var webpack = require('webpack');
 var gutil = require('gutil');
 var beep = require('beepbeep');
@@ -6,6 +7,11 @@ var config = require("./webpack.config.js");
 
 gulp.task('default', ['build-dev', 'build-prod'], function (callback) {
     gulp.watch('./src/**/*', ['build-dev', 'build-prod']);
+});
+
+gulp.task('test', function () {
+    return gulp.src('./test/**/*.html', {read: false})
+    .pipe(mocha());
 });
 
 gulp.task('build-dev', function (callback) {
