@@ -22,6 +22,7 @@
     "gutil": "^1.6.4",
     "jquery": "^2.1.4",
     "mocha": "^2.3.4",
+    "gulp-mocha-phantomjs": "^0.10.1",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0",
     "web-storage-cache": "^0.0.3",
