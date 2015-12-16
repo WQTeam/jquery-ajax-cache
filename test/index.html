@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>test from Web</title>
+</head>
+<body>
+    test
+</body>
+<script>
+
+</script>
+<script src="../node_modules/jquery/dist/jquery.js"></script>
+<script src='../dist/jquery-ajax-cache.min.js'></script>
+
+
+<script>
+
+$ajaxCache.config({
+    cacheValidate: function (res) {    //选填，配置全局的验证是否需要进行缓存的方法,“全局配置” 和 ”自定义“，至少有一处实现cacheValidate方法
+        return res.state === 'ok';
+    },
+    storageType: 'localStorage', //选填，‘localStorage’ or 'sessionStorage', 默认‘localStorage’
+    timeOut: 60 * 60, //选填， 单位秒。默认1小时
+});
+
+</script>
+</html>

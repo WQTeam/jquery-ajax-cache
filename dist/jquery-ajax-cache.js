@@ -59,18 +59,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.CacheProxy = undefined;
+	exports.$ajaxCache = undefined;
 
-	var _CacheProxy = __webpack_require__(1);
+	var _AjaxCache = __webpack_require__(2);
 
-	var _CacheProxy2 = _interopRequireDefault(_CacheProxy);
+	var _core = __webpack_require__(4);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _config = __webpack_require__(1);
 
-	exports.CacheProxy = _CacheProxy2.default;
+	var $ajaxCache;
+	if (window[_config.globalCachePluginName]) {
+	    console.warn(_config.globalCachePluginName + ' has existed!');
+	} else {
+	    if (!window.$) {
+	        console.error('can not find jQuery in global!!');
+	    }
+	    exports.$ajaxCache = $ajaxCache = new _AjaxCache.AjaxCache($);
+	    (0, _core.addFilterToJquery)($ajaxCache);
+	}
+
+	exports.$ajaxCache = $ajaxCache;
 
 /***/ },
 /* 1 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.defaultCacheValidate = defaultCacheValidate;
+	var defaultExpires = exports.defaultExpires = 60 * 60;
+	var defaultStorageType = exports.defaultStorageType = 'localStorage';
+	var defaultDataVersion = exports.defaultDataVersion = '1.0.0';
+	function defaultCacheValidate(response) {
+	    console.warn('There is no cacheValidate function!!');
+	    return false;
+	}
+	var globalCachePluginName = exports.globalCachePluginName = '$ajaxCache';
+
+/***/ },
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80,17 +110,78 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.AjaxCache = undefined;
+
+	var _CacheProxy = __webpack_require__(3);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var WebStorageCache = __webpack_require__(2);
+	var AjaxCache = exports.AjaxCache = (function () {
+	    function AjaxCache($) {
+	        _classCallCheck(this, AjaxCache);
 
-	var CacheProxy = (function () {
+	        this.$ = $;
+	        this.cacheProxy = new _CacheProxy.CacheProxy();
+	    }
+
+	    _createClass(AjaxCache, [{
+	        key: 'config',
+	        value: function config(options) {
+	            this.cacheProxy = new _CacheProxy.CacheProxy(options);
+	        }
+	    }, {
+	        key: 'getCacheProxy',
+	        value: function getCacheProxy() {
+	            return this.cacheProxy;
+	        }
+	    }]);
+
+	    return AjaxCache;
+	})();
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.CacheProxy = undefined;
+
+	var _config = __webpack_require__(1);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var WebStorageCache = __webpack_require__(5);
+
+	function extend(obj, props) {
+	    for (var key in props) {
+	        obj[key] = props[key];
+	    }return obj;
+	}
+
+	var CacheProxy = exports.CacheProxy = (function () {
 	    function CacheProxy(options) {
 	        _classCallCheck(this, CacheProxy);
 
-	        this.defaultExpires = 60 * 60;
-	        this.defaultStorageType = 'localStorage';
+	        var defaults = {
+	            expires: _config.defaultExpires,
+	            storageType: _config.defaultStorageType,
+	            dataVersion: _config.defaultDataVersion,
+	            cacheValidate: _config.defaultCacheValidate
+	        };
+
+	        var opt = extend(defaults, options);
+
+	        this.defaultExpires = opt.expires;
+	        this.storageType = opt.storageType;
+	        this.dataVersion = opt.dataVersion;
+	        this.cacheValidate = opt.cacheValidate;
+
 	        this.storageMap = {
 	            sessionStorage: new WebStorageCache({
 	                storage: 'sessionStorage'
@@ -99,6 +190,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                storage: 'localStorage'
 	            })
 	        };
+	        // 清除已过期数据
+	        this.storageMap.sessionStorage.deleteAllExpires();
+	        this.storageMap.localStorage.deleteAllExpires();
 	    }
 
 	    _createClass(CacheProxy, [{
@@ -110,17 +204,130 @@ return /******/ (function(modules) { // webpackBootstrap
 	            } catch (e) {
 	                console.error(e);
 	            }
-	            return AjaxOptions.wsCache.cacheKey || AjaxOptions.url.replace(/jQuery.*/, '') + AjaxOptions.type.toUpperCase() + (dataString || '') + (AjaxOptions.wsCache.version || '1.0.0');
+	            return AjaxOptions.ajaxCache.cacheKey || AjaxOptions.url.replace(/jQuery.*/, '') + AjaxOptions.type.toUpperCase() + (dataString || '') + (AjaxOptions.ajaxCache.version || this.defaultDataVersion);
+	        }
+	    }, {
+	        key: 'getStorage',
+	        value: function getStorage(type) {
+	            return this.storageMap[type] || this.storageMap[this.storageType] || this.storageMap['localStorage'];
+	        }
+	    }, {
+	        key: 'getCacheValidateFun',
+	        value: function getCacheValidateFun() {
+	            return this.cacheValidate;
 	        }
 	    }]);
 
 	    return CacheProxy;
 	})();
 
-	exports.default = CacheProxy;
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.addFilterToJquery = addFilterToJquery;
+	function addFilterToJquery($ajaxCache) {
+
+	    var $ = $ajaxCache.$;
+
+	    $.ajaxPrefilter(function (options) {
+
+	        var cacheProxy = $ajaxCache.getCacheProxy();
+
+	        var ajaxCacheOptions = options.ajaxCache;
+
+	        if (ajaxCacheOptions) {
+	            var storage = cacheProxy.getStorage(ajaxCacheOptions.storageType);
+
+	            if (!storage.isSupported()) {
+	                return;
+	            }
+
+	            try {
+	                var data = options.data && JSON.parse(options.data);
+	                var cacheKey = cacheProxy.genCacheKey(options);
+	                var value = storage.get(cacheKey);
+
+	                if (!value) {
+	                    // If it not in the cache, we store the data, add success callback - normal callback will proceed
+	                    if (options.success) {
+	                        options.realsuccess = options.success;
+	                    }
+	                    options.success = function (data) {
+
+	                        var exp = defaultExpires;
+	                        if (typeof ajaxCacheOptions.timeout === 'number') {
+	                            exp = ajaxCacheOptions.timeout;
+	                        }
+	                        try {
+	                            var cacheValidateFun = ajaxCacheOptions.cacheValidate || cacheProxy.getCacheValidateFun();
+	                            if (typeof cacheValidateFun === 'function') {
+	                                if (cacheValidateFun.call()) {
+	                                    // 业务逻辑的判断这个请求是否真正成功的请求。
+	                                    storage.set(cacheKey, data, { exp: exp });
+	                                }
+	                            } else {
+	                                console.error('cacheValidate must be a Function');
+	                            }
+	                        } catch (e) {
+	                            console.error(e);
+	                        }
+	                        if (options.realsuccess) options.realsuccess(data);
+	                    };
+	                }
+	            } catch (e) {
+	                console.error(e);
+	            }
+	        } else {
+	            return;
+	        }
+	    });
+
+	    /**
+	    * This function performs the fetch from cache portion of the functionality needed to cache ajax
+	    * calls and still fulfill the jqXHR Deferred Promise interface.
+	    * See also $.ajaxPrefilter
+	    * @method $.ajaxTransport
+	    * @params options {Object} Options for the ajax call, modified with ajax standard settings
+	    */
+	    $.ajaxTransport("+*", function (options) {
+	        var cacheProxy = $ajaxCache.getCacheProxy();
+	        var ajaxCacheOptions = options.ajaxCache;
+
+	        if (ajaxCacheOptions) {
+	            var storage = cacheProxy.getStorage(ajaxCacheOptions.storageType);
+
+	            if (!storage.isSupported()) {
+	                return;
+	            }
+
+	            var cacheKey = cacheProxy.genCacheKey(options),
+	                value = storage.get(cacheKey);
+
+	            if (value) {
+	                console.log('read from localStorage cacahe!!');
+	                return {
+	                    send: function send(headers, completeCallback) {
+	                        var response = {};
+	                        response['json'] = value;
+	                        completeCallback(200, 'success', response, '');
+	                    },
+	                    abort: function abort() {
+	                        console.log("Aborted ajax transport for json cache.");
+	                    }
+	                };
+	            }
+	        }
+	    });
+	}
 
 /***/ },
-/* 2 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!

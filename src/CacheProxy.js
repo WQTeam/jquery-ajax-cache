@@ -1,9 +1,32 @@
 var WebStorageCache = require('../node_modules/web-storage-cache/dist/web-storage-cache.min.js');
+import {
+    defaultExpires,
+    defaultStorageType,
+    defaultDataVersion,
+    defaultCacheValidate
+} from './config'
 
-export default class CacheProxy {
+function extend (obj, props) {
+    for (var key in props) obj[key] = props[key];
+    return obj;
+}
+
+export class CacheProxy {
     constructor(options) {
-        this.defaultExpires = 60 * 60;
-        this.defaultStorageType = 'localStorage';
+        let defaults = {
+            expires: defaultExpires,
+            storageType: defaultStorageType,
+            dataVersion: defaultDataVersion,
+            cacheValidate: defaultCacheValidate
+        };
+
+        let opt = extend(defaults, options);
+
+        this.defaultExpires = opt.expires;
+        this.storageType = opt.storageType;
+        this.dataVersion = opt.dataVersion;
+        this.cacheValidate = opt.cacheValidate;
+
         this.storageMap = {
             sessionStorage: new WebStorageCache({
                 storage: 'sessionStorage'
@@ -12,6 +35,9 @@ export default class CacheProxy {
                 storage: 'localStorage'
             })
         }
+        // 清除已过期数据
+        this.storageMap.sessionStorage.deleteAllExpires();
+        this.storageMap.localStorage.deleteAllExpires();
     }
     genCacheKey (AjaxOptions) {
         var dataString = AjaxOptions.data;
@@ -20,6 +46,12 @@ export default class CacheProxy {
         } catch (e) {
             console.error(e);
         }
-        return AjaxOptions.wsCache.cacheKey || AjaxOptions.url.replace(/jQuery.*/,'') + AjaxOptions.type.toUpperCase() + (dataString || '') + (AjaxOptions.wsCache.version || '1.0.0');
-    };
+        return AjaxOptions.ajaxCache.cacheKey || AjaxOptions.url.replace(/jQuery.*/,'') + AjaxOptions.type.toUpperCase() + (dataString || '') + (AjaxOptions.ajaxCache.version || this.defaultDataVersion);
+    }
+    getStorage (type) {
+        return this.storageMap[type] || this.storageMap[this.storageType] || this.storageMap['localStorage'];
+    }
+    getCacheValidateFun() {
+        return this.cacheValidate;
+    }
 }
