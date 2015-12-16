@@ -1,8 +1,9 @@
 # jquery-ajax-cache
-Ajax Cache plugin backed by localStorage or sessionStorage for jQuery
 [![Build Status](https://travis-ci.org/WQTeam/jquery-ajax-cache.svg)](https://travis-ci.org/WQTeam/jquery-ajax-cache)
 [![Circle CI](https://circleci.com/gh/WQTeam/jquery-ajax-cache.svg?style=svg)](https://circleci.com/gh/WQTeam/jquery-ajax-cache)
 [![npm](https://img.shields.io/npm/dt/jquery-ajax-cache.svg)](https://www.npmjs.com/package/jquery-ajax-cache)
+
+Ajax Cache plugin backed by localStorage or sessionStorage for jQuery
 
 # 下载
 [下载](https://github.com/WQTeam/jquery-ajax-cache/releases) 最新 jquery-ajax-cache
