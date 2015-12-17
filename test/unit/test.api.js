@@ -3,6 +3,16 @@ var server;
 function clearStorage() {
     window.localStorage.clear();
 }
+function simpleAjaxWithCache (callback) {
+    $.ajax({
+        ajaxCache: true,
+        url:'config/cacheValidate/true',
+        success: function (data) {
+            console.log(data);
+            callback(data);
+        }
+    });
+}
 
 describe('jquery-ajax-cache', function() {
     'use strict';
@@ -19,18 +29,6 @@ describe('jquery-ajax-cache', function() {
     describe('#config', function() {
 
         describe('#cacheValidate', function () {
-
-            function simpleAjaxWithCache (callback) {
-                $.ajax({
-                    ajaxCache: true,
-                    url:'config/cacheValidate/true',
-                    success: function (data) {
-                        console.log(data);
-                        callback(data);
-                    }
-                });
-            }
-
             beforeEach(function() {
                 server.restore();
                 $ajaxCache.config(); // reset $ajaxCache
@@ -87,6 +85,9 @@ describe('jquery-ajax-cache', function() {
                 expect(callback).have.been.calledWithMatch({name: 'request 2'});
 
             })
+        });
+        describe('#timeout', function () {
+            // TODO: 
         });
     });
 
