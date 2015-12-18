@@ -1,6 +1,6 @@
 var WebStorageCache = require('../node_modules/web-storage-cache/dist/web-storage-cache.min.js');
 import {
-    defaultExpires,
+    defaultTimeout,
     defaultStorageType,
     defaultDataVersion,
     defaultCacheValidate
@@ -14,7 +14,7 @@ function extend (obj, props) {
 export class CacheProxy {
     constructor(options) {
         let defaults = {
-            expires: defaultExpires,
+            timeout: defaultTimeout,
             storageType: defaultStorageType,
             dataVersion: defaultDataVersion,
             cacheValidate: defaultCacheValidate
@@ -22,7 +22,7 @@ export class CacheProxy {
 
         let opt = extend(defaults, options);
 
-        this.defaultExpires = opt.expires;
+        this.defaultTimeout = opt.timeout;
         this.storageType = opt.storageType;
         this.dataVersion = opt.dataVersion;
         this.cacheValidate = opt.cacheValidate;

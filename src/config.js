@@ -1,4 +1,4 @@
-export const defaultExpires = 60 * 60;
+export const defaultTimeout = 60 * 60;
 export const defaultStorageType = 'localStorage';
 export const defaultDataVersion = '1.0.0';
 export function defaultCacheValidate(response) {

@@ -90,7 +90,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	exports.defaultCacheValidate = defaultCacheValidate;
-	var defaultExpires = exports.defaultExpires = 60 * 60;
+	var defaultTimeout = exports.defaultTimeout = 60 * 60;
 	var defaultStorageType = exports.defaultStorageType = 'localStorage';
 	var defaultDataVersion = exports.defaultDataVersion = '1.0.0';
 	function defaultCacheValidate(response) {
@@ -169,7 +169,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _classCallCheck(this, CacheProxy);
 
 	        var defaults = {
-	            expires: _config.defaultExpires,
+	            timeout: _config.defaultTimeout,
 	            storageType: _config.defaultStorageType,
 	            dataVersion: _config.defaultDataVersion,
 	            cacheValidate: _config.defaultCacheValidate
@@ -177,7 +177,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var opt = extend(defaults, options);
 
-	        this.defaultExpires = opt.expires;
+	        this.defaultTimeout = opt.timeout;
 	        this.storageType = opt.storageType;
 	        this.dataVersion = opt.dataVersion;
 	        this.cacheValidate = opt.cacheValidate;
@@ -259,8 +259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        options.realsuccess = options.success;
 	                    }
 	                    options.success = function (data) {
-
-	                        var exp = cacheProxy.defaultExpires;
+	                        var exp = cacheProxy.defaultTimeout;
 	                        if (typeof ajaxCacheOptions.timeout === 'number') {
 	                            exp = ajaxCacheOptions.timeout;
 	                        }
