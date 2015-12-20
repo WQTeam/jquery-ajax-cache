@@ -3,7 +3,15 @@
 [![Circle CI](https://circleci.com/gh/WQTeam/jquery-ajax-cache.svg?style=svg)](https://circleci.com/gh/WQTeam/jquery-ajax-cache)
 [![npm](https://img.shields.io/npm/dt/jquery-ajax-cache.svg)](https://www.npmjs.com/package/jquery-ajax-cache)
 
-Ajax Cache plugin backed by localStorage or sessionStorage for jQuery
+Ajax Cache plugin backed by localStorage or sessionStorage for jQuery  
+
+
+# Why jquery-ajax-cache？
+    优点：  
+        1、使用简单！
+        2、还是使用简单！
+        3、重要事情3遍，简单！
+        4、最大可能的清除过期数据，避免溢出
 
 # 下载
 [下载](https://github.com/WQTeam/jquery-ajax-cache/releases) 最新 jquery-ajax-cache
