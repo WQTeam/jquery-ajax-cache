@@ -7,11 +7,12 @@ Ajax Cache plugin backed by localStorage or sessionStorage for jQuery
 
 
 # Why jquery-ajax-cache？
-    优点：  
-        1、使用简单！
-        2、还是使用简单！
-        3、重要事情3遍，简单！
-        4、最大可能的清除过期数据，避免溢出
+### 优点  
+
+1、使用简单！  
+2、还是使用简单！！  
+3、重要事情3遍，简单！！！  
+4、最大可能的清除过期数据，避免溢出  
 
 # 下载
 [下载](https://github.com/WQTeam/jquery-ajax-cache/releases) 最新 jquery-ajax-cache
@@ -34,7 +35,7 @@ npm install jquery-ajax-cache --save-dev
 
 # 使用
 
-## 全局配置
+### 全局配置
 ```javascript
 $ajaxCache.config({
     // 业务逻辑判断请求是否缓存， res为ajax返回结果
@@ -46,7 +47,7 @@ $ajaxCache.config({
 });
 ```
 
-## 简单使用
+### 简单使用
 ```javascript
 $.ajax({
     // 使用时 只要增加给ajax请求增加一行属性   ajaxCache: true
@@ -57,7 +58,7 @@ $.ajax({
 });
 ```
 
-## 自定义
+### 自定义
 ```javascript
 $.ajax(
     // 此处的参数会覆盖‘全局配置’中的设置
