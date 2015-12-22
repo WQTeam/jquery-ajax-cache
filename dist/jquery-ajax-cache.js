@@ -134,6 +134,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getCacheProxy() {
 	            return this.cacheProxy;
 	        }
+	    }, {
+	        key: 'deleteAllExpires',
+	        value: function deleteAllExpires() {
+	            this.cacheProxy.deleteAllExpires();
+	        }
 	    }]);
 
 	    return AjaxCache;
@@ -191,8 +196,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            })
 	        };
 	        // 清除已过期数据
-	        this.storageMap.sessionStorage.deleteAllExpires();
-	        this.storageMap.localStorage.deleteAllExpires();
+	        this.deleteAllExpires();
 	    }
 
 	    _createClass(CacheProxy, [{
@@ -215,6 +219,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'getCacheValidateFun',
 	        value: function getCacheValidateFun() {
 	            return this.cacheValidate;
+	        }
+	    }, {
+	        key: 'deleteAllExpires',
+	        value: function deleteAllExpires() {
+	            this.storageMap.sessionStorage.deleteAllExpires();
+	            this.storageMap.localStorage.deleteAllExpires();
 	        }
 	    }]);
 
@@ -259,6 +269,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        options.realsuccess = options.success;
 	                    }
 	                    options.success = function (data) {
+
 	                        var exp = cacheProxy.defaultTimeout;
 	                        if (typeof ajaxCacheOptions.timeout === 'number') {
 	                            exp = ajaxCacheOptions.timeout;

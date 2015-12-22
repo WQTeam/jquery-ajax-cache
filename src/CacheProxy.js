@@ -36,8 +36,7 @@ export class CacheProxy {
             })
         }
         // 清除已过期数据
-        this.storageMap.sessionStorage.deleteAllExpires();
-        this.storageMap.localStorage.deleteAllExpires();
+        this.deleteAllExpires();
     }
     genCacheKey (AjaxOptions) {
         var dataString = AjaxOptions.data;
@@ -53,5 +52,9 @@ export class CacheProxy {
     }
     getCacheValidateFun() {
         return this.cacheValidate;
+    }
+    deleteAllExpires () {
+        this.storageMap.sessionStorage.deleteAllExpires();
+        this.storageMap.localStorage.deleteAllExpires();
     }
 }

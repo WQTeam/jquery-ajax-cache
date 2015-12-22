@@ -11,4 +11,7 @@ export class AjaxCache {
     getCacheProxy () {
         return this.cacheProxy;
     }
+    deleteAllExpires () {
+        this.cacheProxy.deleteAllExpires();
+    }
 }
