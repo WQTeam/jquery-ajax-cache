@@ -38,8 +38,8 @@ npm install jquery-ajax-cache --save-dev
 ### 全局配置
 ```javascript
 $ajaxCache.config({
-    // 业务逻辑判断请求是否缓存， res为ajax返回结果
-    cacheValidate: function (res) {    //选填，配置全局的验证是否需要进行缓存的方法,“全局配置” 和 ”自定义“，至少有一处实现cacheValidate方法
+    // 业务逻辑判断请求是否缓存， res为ajax返回结果, options 为 $.ajax 的参数
+    cacheValidate: function (res, options) {    //选填，配置全局的验证是否需要进行缓存的方法,“全局配置” 和 ”自定义“，至少有一处实现cacheValidate方法
         return res.state === 'ok';
     },
     storageType: 'localStorage', //选填，‘localStorage’ or 'sessionStorage', 默认‘localStorage’

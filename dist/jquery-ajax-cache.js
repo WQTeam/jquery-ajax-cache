@@ -277,7 +277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        try {
 	                            var cacheValidateFun = ajaxCacheOptions.cacheValidate || cacheProxy.getCacheValidateFun();
 	                            if (typeof cacheValidateFun === 'function') {
-	                                if (cacheValidateFun.call()) {
+	                                if (cacheValidateFun.call(null, data, options)) {
 	                                    // 业务逻辑的判断这个请求是否真正成功的请求。
 	                                    storage.set(cacheKey, data, { exp: exp });
 	                                }
