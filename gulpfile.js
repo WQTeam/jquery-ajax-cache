@@ -4,6 +4,7 @@ var webpack = require('webpack');
 var gutil = require('gutil');
 var beep = require('beepbeep');
 var config = require("./webpack.config.js");
+var packageJson = require('./package.json');
 
 gulp.task('default', ['build-dev', 'build-prod'], function (callback) {
     gulp.watch('./src/**/*', ['build-dev', 'build-prod']);
@@ -16,6 +17,11 @@ gulp.task('test', function () {
 
 gulp.task('build-dev', function (callback) {
 
+    var BANNER = '    ' + packageJson.name + ' -- ' + packageJson.description + '\n' +
+                 '    Version ' + packageJson.version + '\n' +
+                 '    https://github.com/WQTeam/jquery-ajax-cache\n' +
+                 '    (c) 2013-2015 WQTeam, MIT license\n';
+
     config.output = {
         libraryTarget: 'umd',
         path: './dist/',
@@ -25,6 +31,7 @@ gulp.task('build-dev', function (callback) {
 
     config.plugins = [
         new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.BannerPlugin(BANNER)
     ];
 
     // run webpack
@@ -41,6 +48,11 @@ gulp.task('build-dev', function (callback) {
 
 gulp.task('build-prod', function (callback) {
 
+    var BANNER = '    ' + packageJson.name + ' -- ' + packageJson.description + '\n' +
+                 '    Version ' + packageJson.version + '\n' +
+                 '    https://github.com/WQTeam/jquery-ajax-cache\n' +
+                 '    (c) 2013-2015 WQTeam, MIT license\n';
+
     config.output = {
         libraryTarget: 'umd',
         path: './dist/',
@@ -53,8 +65,10 @@ gulp.task('build-prod', function (callback) {
         new webpack.optimize.UglifyJsPlugin({
             compressor: {
                 warnings: false
-            }
-        })
+            },
+            comments: false
+        }),
+        new webpack.BannerPlugin(BANNER)
     ];
 
     // run webpack

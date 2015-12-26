@@ -30,7 +30,7 @@ npm install jquery-ajax-cache --save-dev
 # 引入
 ```html
 <script src="../node_modules/jquery/dist/jquery.js"></script>
-<script src='../dist/jquery-ajax-cache.js'></script>
+<script src='../dist/jquery-ajax-cache.min.js'></script>
 ```
 
 # 使用
