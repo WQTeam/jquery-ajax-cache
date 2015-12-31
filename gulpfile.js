@@ -20,7 +20,7 @@ gulp.task('build-dev', function (callback) {
     var BANNER = '    ' + packageJson.name + ' -- ' + packageJson.description + '\n' +
                  '    Version ' + packageJson.version + '\n' +
                  '    https://github.com/WQTeam/jquery-ajax-cache\n' +
-                 '    (c) 2013-2015 WQTeam, MIT license\n';
+                 '    (c) 2013-2016 WQTeam, MIT license\n';
 
     config.output = {
         libraryTarget: 'umd',
