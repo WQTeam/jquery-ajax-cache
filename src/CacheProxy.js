@@ -1,4 +1,5 @@
 var WebStorageCache = require('../node_modules/web-storage-cache/dist/web-storage-cache.min.js');
+var md5 = require('../node_modules/blueimp-md5/js/md5.js');
 import {
     defaultTimeout,
     defaultStorageType,
@@ -38,14 +39,21 @@ export class CacheProxy {
         // 清除已过期数据
         this.deleteAllExpires();
     }
-    genCacheKey (AjaxOptions) {
+    genCacheKey (AjaxOptions, originalOptions) {
         var dataString = AjaxOptions.data;
+        var key;
         try {
-            dataString = JSON.stringify(AjaxOptions.data);
+            if (typeof dataString !== 'string') {
+                dataString = JSON.stringify(AjaxOptions.data);
+            }
+            key = (AjaxOptions.ajaxCache.cacheKey || AjaxOptions.url.replace(/jQuery.*/,'') + AjaxOptions.type.toUpperCase() + (dataString || '') + (AjaxOptions.ajaxCache.version || defaultDataVersion))
+            console.log(key);
+            key = md5(key);
         } catch (e) {
             console.error(e);
         }
-        return AjaxOptions.ajaxCache.cacheKey || AjaxOptions.url.replace(/jQuery.*/,'') + AjaxOptions.type.toUpperCase() + (dataString || '') + (AjaxOptions.ajaxCache.version || this.defaultDataVersion);
+        console.log(key)
+        return key;
     }
     getStorage (type) {
         return this.storageMap[type] || this.storageMap[this.storageType] || this.storageMap['localStorage'];

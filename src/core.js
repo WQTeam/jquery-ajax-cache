@@ -2,7 +2,7 @@ export function addFilterToJquery($ajaxCache) {
 
     let $ = $ajaxCache.$;
 
-    $.ajaxPrefilter(function(options) {
+    $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
 
         let cacheProxy = $ajaxCache.getCacheProxy();
 
@@ -16,8 +16,8 @@ export function addFilterToJquery($ajaxCache) {
             }
 
             try {
-                var data = options.data && JSON.parse(options.data);
-                var cacheKey = cacheProxy.genCacheKey(options);
+                // var data = options.data;
+                var cacheKey = cacheProxy.genCacheKey(options, originalOptions);
                 var value = storage.get(cacheKey);
 
                 if (!value){
@@ -65,7 +65,7 @@ export function addFilterToJquery($ajaxCache) {
     * @method $.ajaxTransport
     * @params options {Object} Options for the ajax call, modified with ajax standard settings
     */
-    $.ajaxTransport("+*", function(options){
+    $.ajaxTransport("+*", function(options, originalOptions, jqXHR){
         let cacheProxy = $ajaxCache.getCacheProxy();
         let ajaxCacheOptions = options.ajaxCache;
 
@@ -76,7 +76,7 @@ export function addFilterToJquery($ajaxCache) {
                 return;
             }
 
-            var cacheKey = cacheProxy.genCacheKey(options),
+            var cacheKey = cacheProxy.genCacheKey(options, originalOptions),
             value = storage.get(cacheKey);
 
             if (value){

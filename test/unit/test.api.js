@@ -272,5 +272,50 @@ describe('jquery-ajax-cache', function() {
             })
         });
     });
+    describe('#data', function () {
+        beforeEach(function () {
+            server.restore();
+            $ajaxCache.config(); // reset $ajaxCache
+            clearStorage();
+            server = sinon.fakeServer.create();
+            clock = sinon.useFakeTimers();
+        });
+        afterEach(function () {
+            clock.restore();
+        });
+        var customAjaxCache = function(sendData,callback) {
+            $.ajax({
+                ajaxCache: {
+                    cacheValidate: function () {
+                        return true;
+                    }
+                },
+                data: sendData,
+                url:'config/cacheValidate/true',
+                success: function (data) {
+                    callback(data);
+                }
+            });
+        }
+        it('should request again when data is change', function () {
+            var callback = sinon.spy();
+            customAjaxCache({a:1}, callback);
+            server.requests[0].respond(
+                200,
+                { "Content-Type": "application/json" },
+                JSON.stringify({name: 'request 1'})
+            );
+            expect(callback).have.been.calledWithExactly({name: 'request 1'});
+            customAjaxCache({a:2}, callback);
+            server.requests[1].respond(
+                200,
+                { "Content-Type": "application/json" },
+                JSON.stringify({name: 'request 2'})
+            );
+            expect(callback).have.been.calledWithExactly({name: 'request 2'});
+            customAjaxCache({a:1}, callback);
+            expect(callback).have.been.calledWithExactly({name: 'request 1'});
+        })
+    })
 
 });

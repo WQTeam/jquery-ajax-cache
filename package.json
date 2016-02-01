@@ -17,6 +17,7 @@
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.3.13",
     "beepbeep": "^1.2.0",
+    "blueimp-md5": "^2.1.0",
     "chai": "^3.4.1",
     "gulp": "^3.9.0",
     "gulp-mocha-phantomjs": "^0.10.1",
