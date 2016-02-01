@@ -3,7 +3,7 @@
   "license": "MIT",
   "author": "wuchangming",
   "description": "Ajax Cache plugin backed by localStorage or sessionStorage for jQuery",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/WQTeam/jquery-ajax-cache"
