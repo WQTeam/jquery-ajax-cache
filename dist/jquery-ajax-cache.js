@@ -209,14 +209,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _createClass(CacheProxy, [{
 	        key: 'genCacheKey',
-	        value: function genCacheKey(AjaxOptions, originalOptions) {
-	            var dataString = AjaxOptions.data;
-	            var key;
+	        value: function genCacheKey(options, originalOptions) {
+	            var dataOrigin = originalOptions.data || {};
+	            var key, dataString;
 	            try {
 	                if (typeof dataString !== 'string') {
-	                    dataString = JSON.stringify(AjaxOptions.data);
+	                    dataString = JSON.stringify(dataOrigin);
 	                }
-	                key = AjaxOptions.ajaxCache.cacheKey || AjaxOptions.url.replace(/jQuery.*/, '') + AjaxOptions.type.toUpperCase() + (dataString || '') + (AjaxOptions.ajaxCache.version || _config.defaultDataVersion);
+	                key = originalOptions.ajaxCache.cacheKey || originalOptions.url.replace(/jQuery.*/, '') + options.type.toUpperCase() + (dataString || '') + (originalOptions.ajaxCache.version || _config.defaultDataVersion);
 	                console.log(key);
 	                key = md5(key);
 	            } catch (e) {

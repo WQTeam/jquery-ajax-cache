@@ -283,7 +283,7 @@ describe('jquery-ajax-cache', function() {
         afterEach(function () {
             clock.restore();
         });
-        var customAjaxCache = function(sendData,callback) {
+        var customDefaultAjaxCache = function(sendData,callback) {
             $.ajax({
                 ajaxCache: {
                     cacheValidate: function () {
@@ -297,24 +297,92 @@ describe('jquery-ajax-cache', function() {
                 }
             });
         }
-        it('should request again when data is change', function () {
-            var callback = sinon.spy();
-            customAjaxCache({a:1}, callback);
-            server.requests[0].respond(
-                200,
-                { "Content-Type": "application/json" },
-                JSON.stringify({name: 'request 1'})
-            );
-            expect(callback).have.been.calledWithExactly({name: 'request 1'});
-            customAjaxCache({a:2}, callback);
-            server.requests[1].respond(
-                200,
-                { "Content-Type": "application/json" },
-                JSON.stringify({name: 'request 2'})
-            );
-            expect(callback).have.been.calledWithExactly({name: 'request 2'});
-            customAjaxCache({a:1}, callback);
-            expect(callback).have.been.calledWithExactly({name: 'request 1'});
+        var customOptionAjaxCache = function(sendData, callback, type) {
+            $.ajax({
+                ajaxCache: {
+                    cacheValidate: function () {
+                        return true;
+                    }
+                },
+                type: type,
+                data: sendData,
+                url:'config/cacheValidate/' + type,
+                success: function (data) {
+                    callback(data);
+                }
+            });
+        }
+        describe('#default', function() {
+            it('should request again when data is change', function () {
+                var callback1 = sinon.spy();
+                var callback2 = sinon.spy();
+                var callback3 = sinon.spy();
+
+                customDefaultAjaxCache({a:1}, callback1);
+                server.requests[0].respond(
+                    200,
+                    { "Content-Type": "application/json" },
+                    JSON.stringify({name: 'request 1'})
+                );
+                expect(callback1).have.been.calledWithExactly({name: 'request 1'});
+                customDefaultAjaxCache({a:2}, callback2);
+                server.requests[1].respond(
+                    200,
+                    { "Content-Type": "application/json" },
+                    JSON.stringify({name: 'request 2'})
+                );
+                expect(callback2).have.been.calledWithExactly({name: 'request 2'});
+                customDefaultAjaxCache({a:1}, callback3);
+                expect(callback3).have.been.calledWithExactly({name: 'request 1'});
+            })
+        })
+        describe('#post', function() {
+            it('should request again when data is change', function () {
+                var callback1 = sinon.spy();
+                var callback2 = sinon.spy();
+                var callback3 = sinon.spy();
+
+                customOptionAjaxCache({a:1}, callback1, 'POST');
+                server.requests[0].respond(
+                    200,
+                    { "Content-Type": "application/json" },
+                    JSON.stringify({name: 'request 1'})
+                );
+                expect(callback1).have.been.calledWithExactly({name: 'request 1'});
+                customOptionAjaxCache({a:2}, callback2, 'POST');
+                server.requests[1].respond(
+                    200,
+                    { "Content-Type": "application/json" },
+                    JSON.stringify({name: 'request 2'})
+                );
+                expect(callback2).have.been.calledWithExactly({name: 'request 2'});
+                customOptionAjaxCache({a:1}, callback3, 'POST');
+                expect(callback3).have.been.calledWithExactly({name: 'request 1'});
+            })
+        })
+        describe('#get', function() {
+            it('should request again when data is change', function () {
+                var callback1 = sinon.spy();
+                var callback2 = sinon.spy();
+                var callback3 = sinon.spy();
+
+                customOptionAjaxCache({a:1}, callback1, 'GET');
+                server.requests[0].respond(
+                    200,
+                    { "Content-Type": "application/json" },
+                    JSON.stringify({name: 'request 1'})
+                );
+                expect(callback1).have.been.calledWithExactly({name: 'request 1'});
+                customOptionAjaxCache({a:2}, callback2, 'GET');
+                server.requests[1].respond(
+                    200,
+                    { "Content-Type": "application/json" },
+                    JSON.stringify({name: 'request 2'})
+                );
+                expect(callback2).have.been.calledWithExactly({name: 'request 2'});
+                customOptionAjaxCache({a:1}, callback3, 'GET');
+                expect(callback3).have.been.calledWithExactly({name: 'request 1'});
+            })
         })
     })
 

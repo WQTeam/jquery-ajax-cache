@@ -39,14 +39,14 @@ export class CacheProxy {
         // 清除已过期数据
         this.deleteAllExpires();
     }
-    genCacheKey (AjaxOptions, originalOptions) {
-        var dataString = AjaxOptions.data;
-        var key;
+    genCacheKey (options, originalOptions) {
+        var dataOrigin = originalOptions.data || {};
+        var key,dataString;
         try {
             if (typeof dataString !== 'string') {
-                dataString = JSON.stringify(AjaxOptions.data);
+                dataString = JSON.stringify(dataOrigin);
             }
-            key = (AjaxOptions.ajaxCache.cacheKey || AjaxOptions.url.replace(/jQuery.*/,'') + AjaxOptions.type.toUpperCase() + (dataString || '') + (AjaxOptions.ajaxCache.version || defaultDataVersion))
+            key = (originalOptions.ajaxCache.cacheKey || originalOptions.url.replace(/jQuery.*/,'') + options.type.toUpperCase() + (dataString || '') + (originalOptions.ajaxCache.version || defaultDataVersion))
             console.log(key);
             key = md5(key);
         } catch (e) {
