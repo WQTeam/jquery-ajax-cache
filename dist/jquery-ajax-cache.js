@@ -1,6 +1,6 @@
 /*!
  *     jquery-ajax-cache -- Ajax Cache plugin backed by localStorage or sessionStorage for jQuery
- *     Version 1.0.1
+ *     Version 1.0.3
  *     https://github.com/WQTeam/jquery-ajax-cache
  *     (c) 2013-2016 WQTeam, MIT license
  * 
@@ -217,12 +217,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    dataString = JSON.stringify(dataOrigin);
 	                }
 	                key = originalOptions.ajaxCache.cacheKey || originalOptions.url.replace(/jQuery.*/, '') + options.type.toUpperCase() + (dataString || '') + (originalOptions.ajaxCache.version || _config.defaultDataVersion);
-	                console.log(key);
 	                key = md5(key);
 	            } catch (e) {
 	                console.error(e);
 	            }
-	            console.log(key);
 	            return key;
 	        }
 	    }, {

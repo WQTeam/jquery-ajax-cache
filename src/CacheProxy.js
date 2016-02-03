@@ -47,12 +47,10 @@ export class CacheProxy {
                 dataString = JSON.stringify(dataOrigin);
             }
             key = (originalOptions.ajaxCache.cacheKey || originalOptions.url.replace(/jQuery.*/,'') + options.type.toUpperCase() + (dataString || '') + (originalOptions.ajaxCache.version || defaultDataVersion))
-            console.log(key);
             key = md5(key);
         } catch (e) {
             console.error(e);
         }
-        console.log(key)
         return key;
     }
     getStorage (type) {
