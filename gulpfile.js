@@ -1,10 +1,12 @@
-var gulp = require('gulp');
-var mocha = require('gulp-mocha-phantomjs');
-var webpack = require('webpack');
-var gutil = require('gutil');
-var beep = require('beepbeep');
-var config = require("./webpack.config.js");
-var packageJson = require('./package.json');
+const gulp = require('gulp');
+const mocha = require('gulp-mocha-phantomjs');
+const webpack = require('webpack');
+const gutil = require('gutil');
+const beep = require('beepbeep');
+const config = require("./webpack.config.js");
+const packageJson = require('./package.json');
+
+const libraryName = '$ajaxCache';
 
 gulp.task('default', ['build-dev', 'build-prod'], function (callback) {
     gulp.watch('./src/**/*', ['build-dev', 'build-prod']);
@@ -25,7 +27,8 @@ gulp.task('build-dev', function (callback) {
     config.output = {
         libraryTarget: 'umd',
         path: './dist/',
-        filename: 'jquery-ajax-cache.js'
+        filename: 'jquery-ajax-cache.js',
+        library: libraryName
     }
     config.entry = './src/index';
 
@@ -54,9 +57,10 @@ gulp.task('build-prod', function (callback) {
                  '    (c) 2013-2015 WQTeam, MIT license\n';
 
     config.output = {
-        libraryTarget: 'umd',
         path: './dist/',
-        filename: 'jquery-ajax-cache.min.js'
+        libraryTarget: "umd",
+        filename: 'jquery-ajax-cache.min.js',
+        library: libraryName
     }
     config.entry = './src/index';
 

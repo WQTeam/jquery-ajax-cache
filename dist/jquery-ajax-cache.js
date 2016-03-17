@@ -1,6 +1,6 @@
 /*!
  *     jquery-ajax-cache -- Ajax Cache plugin backed by localStorage or sessionStorage for jQuery
- *     Version 1.0.3
+ *     Version 2.0.0
  *     https://github.com/WQTeam/jquery-ajax-cache
  *     (c) 2013-2016 WQTeam, MIT license
  * 
@@ -10,10 +10,10 @@
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
+	else if(typeof exports === 'object')
+		exports["$ajaxCache"] = factory();
+	else
+		root["$ajaxCache"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -63,51 +63,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.$ajaxCache = undefined;
+	var _AjaxCache = __webpack_require__(1);
 
-	var _AjaxCache = __webpack_require__(2);
-
-	var _core = __webpack_require__(4);
-
-	var _config = __webpack_require__(1);
-
-	var $ajaxCache;
-	if (window[_config.globalCachePluginName]) {
-	    console.warn(_config.globalCachePluginName + ' has existed!');
-	} else {
-	    if (!window.$) {
-	        console.error('can not find jQuery in global!!');
-	    }
-	    exports.$ajaxCache = $ajaxCache = new _AjaxCache.AjaxCache($);
-	    (0, _core.addFilterToJquery)($ajaxCache);
-	}
-
-	exports.$ajaxCache = $ajaxCache;
+	module.exports = new _AjaxCache.AjaxCache();
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.defaultCacheValidate = defaultCacheValidate;
-	var defaultTimeout = exports.defaultTimeout = 60 * 60;
-	var defaultStorageType = exports.defaultStorageType = 'localStorage';
-	var defaultDataVersion = exports.defaultDataVersion = '1.0.0';
-	function defaultCacheValidate(response) {
-	    console.warn('There is no cacheValidate function!!');
-	    return false;
-	}
-	var globalCachePluginName = exports.globalCachePluginName = '$ajaxCache';
-
-/***/ },
-/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -119,22 +80,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.AjaxCache = undefined;
 
-	var _CacheProxy = __webpack_require__(3);
+	var _CacheProxy = __webpack_require__(2);
+
+	var _core = __webpack_require__(4);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var AjaxCache = exports.AjaxCache = (function () {
-	    function AjaxCache($) {
+	    function AjaxCache() {
 	        _classCallCheck(this, AjaxCache);
-
-	        this.$ = $;
-	        this.cacheProxy = new _CacheProxy.CacheProxy();
 	    }
 
 	    _createClass(AjaxCache, [{
 	        key: 'config',
-	        value: function config(options) {
+	        value: function config() {
+	            var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
 	            this.cacheProxy = new _CacheProxy.CacheProxy(options);
+	            this.$ = options.$ || window.$;
+	            if (this.$ == null) {
+	                console.error('AjaxCache Config Fail!!! can not find jQuery in `global` or `options`!!');
+	                return;
+	            }
+	            (0, _core.addFilterToJquery)(this);
 	        }
 	    }, {
 	        key: 'getCacheProxy',
@@ -152,7 +120,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	})();
 
 /***/ },
-/* 3 */
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -164,7 +132,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.CacheProxy = undefined;
 
-	var _config = __webpack_require__(1);
+	var _config = __webpack_require__(3);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -184,16 +152,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var defaults = {
 	            timeout: _config.defaultTimeout,
 	            storageType: _config.defaultStorageType,
-	            dataVersion: _config.defaultDataVersion,
-	            cacheValidate: _config.defaultCacheValidate
+	            cacheValidate: _config.defaultCacheValidate,
+	            preGenCacheKey: _config.defaultPreGenCacheKey,
+	            forceRefresh: false
 	        };
 
 	        var opt = extend(defaults, options);
 
 	        this.defaultTimeout = opt.timeout;
 	        this.storageType = opt.storageType;
-	        this.dataVersion = opt.dataVersion;
 	        this.cacheValidate = opt.cacheValidate;
+	        this.preGenCacheKey = opt.preGenCacheKey;
+	        this.forceRefresh = opt.forceRefresh;
 
 	        this.storageMap = {
 	            sessionStorage: new WebStorageCache({
@@ -209,19 +179,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _createClass(CacheProxy, [{
 	        key: 'genCacheKey',
-	        value: function genCacheKey(options, originalOptions) {
-	            var dataOrigin = originalOptions.data || {};
-	            var key, dataString;
-	            try {
-	                if (typeof dataString !== 'string') {
-	                    dataString = JSON.stringify(dataOrigin);
-	                }
-	                key = originalOptions.ajaxCache.cacheKey || originalOptions.url.replace(/jQuery.*/, '') + options.type.toUpperCase() + (dataString || '') + (originalOptions.ajaxCache.version || _config.defaultDataVersion);
-	                key = md5(key);
-	            } catch (e) {
-	                console.error(e);
+	        value: function genCacheKey(options, originalOptions, customPreGenCacheKey) {
+
+	            var fun = this.preGenCacheKey;
+	            if (typeof customPreGenCacheKey === 'function') {
+	                fun = customPreGenCacheKey;
 	            }
-	            return key;
+
+	            return md5(fun(options, originalOptions));
 	        }
 	    }, {
 	        key: 'getStorage',
@@ -243,6 +208,37 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return CacheProxy;
 	})();
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.defaultCacheValidate = defaultCacheValidate;
+	exports.defaultPreGenCacheKey = defaultPreGenCacheKey;
+	var defaultTimeout = exports.defaultTimeout = 60 * 60; // 1 hour
+	var defaultStorageType = exports.defaultStorageType = 'localStorage';
+	function defaultCacheValidate(response) {
+	    console.warn('There is no cacheValidate function!!');
+	    return false;
+	}
+	function defaultPreGenCacheKey(ajaxOptions, originalOptions) {
+	    var dataOrigin = originalOptions.data || {};
+	    var key, dataString;
+	    try {
+	        if (typeof dataString !== 'string') {
+	            dataString = JSON.stringify(dataOrigin);
+	        }
+	        key = originalOptions.url.replace(/jQuery.*/, '') + ajaxOptions.type.toUpperCase() + (dataString || '');
+	    } catch (e) {
+	        console.error(e);
+	    }
+	    return key;
+	}
 
 /***/ },
 /* 4 */
@@ -272,14 +268,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 
 	            try {
-	                // var data = options.data;
-	                var cacheKey = cacheProxy.genCacheKey(options, originalOptions);
+	                var cacheKey = cacheProxy.genCacheKey(options, originalOptions, ajaxCacheOptions.preGenCacheKey);
 	                var value = storage.get(cacheKey);
+
+	                // force reflash cache
+	                if (ajaxCacheOptions.forceRefresh === true) {
+	                    storage.delete(cacheKey);
+	                    value = null;
+	                }
 
 	                if (!value) {
 	                    // If it not in the cache, we store the data, add success callback - normal callback will proceed
+	                    var realsuccess;
 	                    if (options.success) {
-	                        options.realsuccess = options.success;
+	                        realsuccess = options.success;
 	                    }
 	                    options.success = function (data) {
 
@@ -300,7 +302,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        } catch (e) {
 	                            console.error(e);
 	                        }
-	                        if (options.realsuccess) options.realsuccess(data);
+	                        if (realsuccess) realsuccess(data);
 	                    };
 	                }
 	            } catch (e) {
@@ -329,11 +331,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return;
 	            }
 
-	            var cacheKey = cacheProxy.genCacheKey(options, originalOptions),
+	            var cacheKey = cacheProxy.genCacheKey(options, originalOptions, ajaxCacheOptions.preGenCacheKey),
 	                value = storage.get(cacheKey);
 
-	            if (value) {
-	                console.log('read from localStorage cacahe!!');
+	            if (value && ajaxCacheOptions.forceRefresh !== true) {
+	                console.info('read from $ajaxCache:', value);
 	                return {
 	                    send: function send(headers, completeCallback) {
 	                        var response = {};

@@ -68,7 +68,8 @@ $.ajax(
             return res.state === 'ok' && res.code ==='200';
         },
         storageType: 'localStorage', //选填，‘localStorage’ or 'sessionStorage', 默认‘localStorage’
-        timeout: 60 * 60, //选填， 单位秒。默认1小时
+        timeout: 60 * 60, //选填， 单位秒。默认1小时,
+        forceRefresh: false //选填，默认false 是否强制刷新请求。本次请求不读取缓存，同时如果请求成功会更新缓存。应用场景如：下拉刷新
     }
 });
 ```

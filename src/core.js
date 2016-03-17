@@ -16,14 +16,20 @@ export function addFilterToJquery($ajaxCache) {
             }
 
             try {
-                // var data = options.data;
-                var cacheKey = cacheProxy.genCacheKey(options, originalOptions);
+                var cacheKey = cacheProxy.genCacheKey(options, originalOptions, ajaxCacheOptions.preGenCacheKey);
                 var value = storage.get(cacheKey);
+
+                // force reflash cache
+                if(ajaxCacheOptions.forceRefresh === true) {
+                    storage.delete(cacheKey);
+                    value = null;
+                }
 
                 if (!value){
                     // If it not in the cache, we store the data, add success callback - normal callback will proceed
+                    var realsuccess;
                     if (options.success) {
-                        options.realsuccess = options.success;
+                        realsuccess = options.success;
                     }
                     options.success = function(data) {
 
@@ -45,7 +51,7 @@ export function addFilterToJquery($ajaxCache) {
                         } catch(e){
                             console.error(e);
                         }
-                        if (options.realsuccess) options.realsuccess(data);
+                        if (realsuccess) realsuccess(data);
                     };
 
                 }
@@ -76,11 +82,11 @@ export function addFilterToJquery($ajaxCache) {
                 return;
             }
 
-            var cacheKey = cacheProxy.genCacheKey(options, originalOptions),
+            var cacheKey = cacheProxy.genCacheKey(options, originalOptions, ajaxCacheOptions.preGenCacheKey),
             value = storage.get(cacheKey);
 
-            if (value){
-                console.log('read from localStorage cacahe!!');
+            if (value && ajaxCacheOptions.forceRefresh !== true){
+                console.info('read from $ajaxCache:', value);
                 return {
                     send: function(headers, completeCallback) {
                         var response = {};

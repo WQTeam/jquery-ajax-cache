@@ -1,10 +1,12 @@
 var WebStorageCache = require('../node_modules/web-storage-cache/dist/web-storage-cache.min.js');
 var md5 = require('../node_modules/blueimp-md5/js/md5.js');
+
 import {
     defaultTimeout,
     defaultStorageType,
     defaultDataVersion,
-    defaultCacheValidate
+    defaultCacheValidate,
+    defaultPreGenCacheKey
 } from './config'
 
 function extend (obj, props) {
@@ -17,16 +19,19 @@ export class CacheProxy {
         let defaults = {
             timeout: defaultTimeout,
             storageType: defaultStorageType,
-            dataVersion: defaultDataVersion,
-            cacheValidate: defaultCacheValidate
+            cacheValidate: defaultCacheValidate,
+            preGenCacheKey: defaultPreGenCacheKey,
+            forceRefresh: false
         };
 
         let opt = extend(defaults, options);
 
         this.defaultTimeout = opt.timeout;
         this.storageType = opt.storageType;
-        this.dataVersion = opt.dataVersion;
         this.cacheValidate = opt.cacheValidate;
+        this.preGenCacheKey = opt.preGenCacheKey;
+        this.forceRefresh = opt.forceRefresh;
+
 
         this.storageMap = {
             sessionStorage: new WebStorageCache({
@@ -39,19 +44,14 @@ export class CacheProxy {
         // 清除已过期数据
         this.deleteAllExpires();
     }
-    genCacheKey (options, originalOptions) {
-        var dataOrigin = originalOptions.data || {};
-        var key,dataString;
-        try {
-            if (typeof dataString !== 'string') {
-                dataString = JSON.stringify(dataOrigin);
-            }
-            key = (originalOptions.ajaxCache.cacheKey || originalOptions.url.replace(/jQuery.*/,'') + options.type.toUpperCase() + (dataString || '') + (originalOptions.ajaxCache.version || defaultDataVersion))
-            key = md5(key);
-        } catch (e) {
-            console.error(e);
+    genCacheKey (options, originalOptions, customPreGenCacheKey) {
+
+        var fun = this.preGenCacheKey;
+        if (typeof customPreGenCacheKey === 'function') {
+            fun = customPreGenCacheKey;
         }
-        return key;
+
+        return md5(fun(options, originalOptions));
     }
     getStorage (type) {
         return this.storageMap[type] || this.storageMap[this.storageType] || this.storageMap['localStorage'];

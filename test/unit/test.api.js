@@ -49,13 +49,13 @@ describe('jquery-ajax-cache', function() {
                 server.requests[0].respond(
                     200,
                     { "Content-Type": "application/json" },
-                    JSON.stringify({name: 'request 1'})
+                    JSON.stringify({name: 'cacheValidate 1'})
                 );
 
                 // second time without server respond
-                simpleAjaxWithCache (callback)
+                simpleAjaxWithCache (callback);
 
-                expect(callback).always.have.been.calledWithMatch({name: 'request 1'});
+                expect(callback).always.have.been.calledWithMatch({name: 'cacheValidate 1'});
             })
             it('should not be cached when cacheValidate return false', function () {
                 var callback = sinon.spy();
@@ -71,18 +71,18 @@ describe('jquery-ajax-cache', function() {
                 server.requests[0].respond(
                     200,
                     { "Content-Type": "application/json" },
-                    JSON.stringify({name: 'request 1'})
+                    JSON.stringify({name: 'cacheValidate 1'})
                 );
-                expect(callback).have.been.calledWithExactly({name: 'request 1'});
+                expect(callback).have.been.calledWithExactly({name: 'cacheValidate 1'});
 
                 // first time
                 simpleAjaxWithCache(callback);
                 server.requests[1].respond(
                     200,
                     { "Content-Type": "application/json" },
-                    JSON.stringify({name: 'request 2'})
+                    JSON.stringify({name: 'cacheValidate 2'})
                 );
-                expect(callback).have.been.calledWithExactly({name: 'request 2'});
+                expect(callback).have.been.calledWithExactly({name: 'cacheValidate 2'});
 
             })
         });
@@ -113,14 +113,14 @@ describe('jquery-ajax-cache', function() {
                 server.requests[0].respond(
                     200,
                     { "Content-Type": "application/json" },
-                    JSON.stringify({name: 'request 1'})
+                    JSON.stringify({name: 'timeout 1'})
                 );
-                expect(callback).have.been.calledWithExactly({name: 'request 1'});
+                expect(callback).have.been.calledWithExactly({name: 'timeout 1'});
 
                 clock.tick(30*1000);
                 // not timeout
                 simpleAjaxWithCache(callback);
-                expect(callback).have.been.calledWithExactly({name: 'request 1'});
+                expect(callback).have.been.calledWithExactly({name: 'timeout 1'});
 
                 clock.tick(30*1000);
                 // timeout
@@ -128,9 +128,9 @@ describe('jquery-ajax-cache', function() {
                 server.requests[1].respond(
                     200,
                     { "Content-Type": "application/json" },
-                    JSON.stringify({name: 'request 2'})
+                    JSON.stringify({name: 'timeout 2'})
                 );
-                expect(callback).have.been.calledWithExactly({name: 'request 2'});
+                expect(callback).have.been.calledWithExactly({name: 'timeout 2'});
             })
         });
     });
@@ -183,18 +183,18 @@ describe('jquery-ajax-cache', function() {
                 server.requests[0].respond(
                     200,
                     { "Content-Type": "application/json" },
-                    JSON.stringify({name: 'request 1'})
+                    JSON.stringify({name: 'cacheValidate 1'})
                 );
-                expect(callback).have.been.calledWithExactly({name: 'request 1'});
+                expect(callback).have.been.calledWithExactly({name: 'cacheValidate 1'});
 
                 // second time without server respond
                 customAjaxNoCache (callback)
                 server.requests[1].respond(
                     200,
                     { "Content-Type": "application/json" },
-                    JSON.stringify({name: 'request 2'})
+                    JSON.stringify({name: 'cacheValidate 2'})
                 );
-                expect(callback).have.been.calledWithExactly({name: 'request 2'});
+                expect(callback).have.been.calledWithExactly({name: 'cacheValidate 2'});
             })
             it('should be cached when custom cacheValidate return true', function () {
                 var callback = sinon.spy();
@@ -204,13 +204,13 @@ describe('jquery-ajax-cache', function() {
                 server.requests[0].respond(
                     200,
                     { "Content-Type": "application/json" },
-                    JSON.stringify({name: 'request 1'})
+                    JSON.stringify({name: 'cacheValidate 1'})
                 );
-                expect(callback).have.been.calledWithExactly({name: 'request 1'});
+                expect(callback).have.been.calledWithExactly({name: 'cacheValidate 1'});
 
                 // second time without server respond
                 customAjaxCache (callback)
-                expect(callback).have.been.calledWithExactly({name: 'request 1'});
+                expect(callback).have.been.calledWithExactly({name: 'cacheValidate 1'});
             })
         });
         describe('#timeout', function () {
@@ -252,13 +252,13 @@ describe('jquery-ajax-cache', function() {
                 server.requests[0].respond(
                     200,
                     { "Content-Type": "application/json" },
-                    JSON.stringify({name: 'request 1'})
+                    JSON.stringify({name: 'timeout 1'})
                 );
-                expect(callback).have.been.calledWithExactly({name: 'request 1'});
+                expect(callback).have.been.calledWithExactly({name: 'timeout 1'});
                 clock.tick(15*1000);
                 // not timeout
                 cache30second(callback);
-                expect(callback).have.been.calledWithExactly({name: 'request 1'});
+                expect(callback).have.been.calledWithExactly({name: 'timeout 1'});
 
                 clock.tick(15*1000);
                 // timeout
@@ -266,11 +266,84 @@ describe('jquery-ajax-cache', function() {
                 server.requests[1].respond(
                     200,
                     { "Content-Type": "application/json" },
-                    JSON.stringify({name: 'request 2'})
+                    JSON.stringify({name: 'timeout 2'})
                 );
-                expect(callback).have.been.calledWithExactly({name: 'request 2'});
+                expect(callback).have.been.calledWithExactly({name: 'timeout 2'});
             })
         });
+
+        //  test forceRefresh
+        //
+        //
+        describe('#forceRefresh', function () {
+
+            beforeEach(function () {
+                server.restore();
+                $ajaxCache.config(); // reset $ajaxCache
+                clearStorage();
+                server = sinon.fakeServer.create();
+                clock = sinon.useFakeTimers();
+            });
+            afterEach(function () {
+                clock.restore();
+            });
+            var cache30second = function (callback) {
+                $.ajax({
+                    ajaxCache: {
+                        timeout: 30 // seconds
+                    },
+                    url:'config/forceRefresh/true',
+                    success: function (data) {
+                        callback(data);
+                    }
+                });
+            }
+            var cacheForceReflash30second = function (callback) {
+                $.ajax({
+                    ajaxCache: {
+                        timeout: 30, // seconds
+                        forceRefresh: true
+                    },
+                    url:'config/forceRefresh/true',
+                    success: function (data) {
+                        callback(data);
+                    }
+                });
+            }
+
+            it('should force reflash cache', function () {
+                var callback = sinon.spy();
+
+                $ajaxCache.config({
+                    cacheValidate: function(){
+                        return true;
+                    }
+                });
+
+                // first time
+                cache30second(callback);
+                server.requests[0].respond(
+                    200,
+                    { "Content-Type": "application/json" },
+                    JSON.stringify({name: 'force reflash 1'})
+                );
+                expect(callback).have.been.calledWithExactly({name: 'force reflash 1'});
+                clock.tick(15*1000);
+                // not timeout
+                cacheForceReflash30second(callback);
+                server.requests[1].respond(
+                    200,
+                    { "Content-Type": "application/json" },
+                    JSON.stringify({name: 'force reflash 2'})
+                );
+                expect(callback).have.been.calledWithExactly({name: 'force reflash 2'});
+
+                clock.tick(25*1000);
+                cache30second(callback);
+                expect(callback).have.been.calledWithExactly({name: 'force reflash 2'});
+            })
+        });
+
     });
     describe('#data', function () {
         beforeEach(function () {

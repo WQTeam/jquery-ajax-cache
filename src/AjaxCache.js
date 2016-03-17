@@ -1,12 +1,17 @@
-import {CacheProxy} from './CacheProxy'
+import {CacheProxy} from './CacheProxy';
+import {addFilterToJquery} from './core';
 
 export class AjaxCache {
-    constructor($) {
-        this.$ = $;
-        this.cacheProxy = new CacheProxy();
+    constructor() {
     }
-    config (options) {
+    config (options = {}) {
         this.cacheProxy = new CacheProxy(options);
+        this.$ = options.$ || window.$;
+        if (this.$ == null) {
+            console.error('AjaxCache Config Fail!!! can not find jQuery in `global` or `options`!!');
+            return;
+        }
+        addFilterToJquery(this);
     }
     getCacheProxy () {
         return this.cacheProxy;
