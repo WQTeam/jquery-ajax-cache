@@ -1,4 +1,4 @@
-var WebStorageCache = require('../node_modules/web-storage-cache/dist/web-storage-cache.min.js');
+var WebStorageCache = require('web-storage-cache');
 var md5 = require('../node_modules/blueimp-md5/js/md5.js');
 
 import {
