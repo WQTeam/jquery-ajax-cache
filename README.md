@@ -34,8 +34,9 @@ npm install jquery-ajax-cache --save-dev
 ```
 
 # 使用
+因为在实际应用中，后台返回的结果可能是成功信息，也有可能是失败信息。所以只有业务上我们认为成功的请求我们才需要缓冲起来。jquery-ajax-cache插件预留了一个方法`cacheValidate`给使用者作为判断请求是否成功。  
 
-### 全局配置
+### 全局配置`cacheValidate`
 ```javascript
 $ajaxCache.config({
     // 业务逻辑判断请求是否缓存， res为ajax返回结果, options 为 $.ajax 的参数
@@ -45,10 +46,7 @@ $ajaxCache.config({
     storageType: 'localStorage', //选填，‘localStorage’ or 'sessionStorage', 默认‘localStorage’
     timeout: 60 * 60, //选填， 单位秒。默认1小时
 });
-```
 
-### 简单使用
-```javascript
 $.ajax({
     // 使用时 只要增加给ajax请求增加一行属性   ajaxCache: true
     ajaxCache: true     // “全局配置” 和 ”自定义“，至少有一处实现cacheValidate方法
@@ -56,9 +54,10 @@ $.ajax({
      others...
     */
 });
+
 ```
 
-### 自定义
+### 自定义单个请求的`cacheValidate`
 ```javascript
 $.ajax(
     // 此处的参数会覆盖‘全局配置’中的设置
