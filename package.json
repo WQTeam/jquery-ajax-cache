@@ -3,13 +3,14 @@
   "license": "MIT",
   "author": "wuchangming",
   "description": "Ajax Cache plugin backed by localStorage or sessionStorage for jQuery",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/WQTeam/jquery-ajax-cache"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "build": "gulp"
   },
   "devDependencies": {
     "babel": "^6.3.13",
@@ -26,7 +27,7 @@
     "mocha": "^2.3.4",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0",
-    "web-storage-cache": "1.0.2",
+    "web-storage-cache": "1.0.3",
     "webpack": "^1.12.9"
   }
 }
