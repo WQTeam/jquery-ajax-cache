@@ -2,6 +2,10 @@
 [![Build Status](https://travis-ci.org/WQTeam/jquery-ajax-cache.svg)](https://travis-ci.org/WQTeam/jquery-ajax-cache)
 [![npm](https://img.shields.io/npm/dt/jquery-ajax-cache.svg)](https://www.npmjs.com/package/jquery-ajax-cache)
 
+## Language
+[English Document](./README_EN.md)
+
+
 <b>jquery-ajax-cache 插件</b>扩展了jQuery的`$.ajax`，提供非常便利的方式缓存ajax请求到‘localStorage’或‘sessionStorage’中。你唯一要做的就是实现`cacheValidate`方法，验证返回结果是否需要缓存。页面加载和数据读写过程插件都会进行过期数据清除，避免过期数据的堆积。同时你也可以调用`$ajaxCache.deleteAllExpires()`手动清除过期缓存。
 
 
