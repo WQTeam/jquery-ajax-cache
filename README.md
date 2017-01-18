@@ -39,7 +39,7 @@ npm install jquery-ajax-cache --save-dev
 # 使用
 因为在实际应用中，后台返回的结果可能是成功信息，也有可能是失败信息。所以只有业务上我们认为成功的请求我们才需要缓冲起来。jquery-ajax-cache插件预留了一个方法`cacheValidate`给使用者作为判断请求是否成功。  
 
-### 全局配置`cacheValidate`
+### 全局配置`cacheValidate`(该方法需要全局调用一次)
 ```javascript
 $ajaxCache.config({
     // 业务逻辑判断请求是否缓存， res为ajax返回结果, options 为 $.ajax 的参数
