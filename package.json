@@ -23,7 +23,7 @@
     "gulp": "^3.9.0",
     "gulp-mocha-phantomjs": "^0.10.1",
     "gutil": "^1.6.4",
-    "jquery": "^2.1.4",
+    "jquery": "^3.0.0",
     "mocha": "^2.3.4",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0",
